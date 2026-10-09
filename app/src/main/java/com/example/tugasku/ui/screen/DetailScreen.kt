@@ -3,6 +3,7 @@ package com.example.tugasku.ui.screen
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -10,19 +11,29 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.tugasku.data.local.StatusTugas
 import com.example.tugasku.data.local.Tugas
 import com.example.tugasku.util.formatTanggal
 import com.example.tugasku.util.label
@@ -33,8 +44,13 @@ import com.example.tugasku.util.label
 fun DetailScreen(
     tugas: Tugas?,
     onEditClick: () -> Unit,
+    onStatusChange: (StatusTugas) -> Unit,
+    onHapusConfirm: () -> Unit,
     onKembali: () -> Unit
 ) {
+    // State lokal layar ini: dialog sedang tampil atau tidak
+    var tampilkanDialogHapus by rememberSaveable { mutableStateOf(false) }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -70,12 +86,63 @@ fun DetailScreen(
                 BarisDetail("Mata kuliah", tugas.mataKuliah)
                 BarisDetail("Deadline", formatTanggal(tugas.deadline))
                 BarisDetail("Prioritas", tugas.prioritas.label())
-                BarisDetail("Status", tugas.status.label())
                 BarisDetail("Deskripsi", tugas.deskripsi.ifBlank { "-" })
+
+                // Pengubah status: perubahan langsung disimpan ke database
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text(
+                        text = "Status",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        StatusTugas.entries.forEach { pilihan ->
+                            FilterChip(
+                                selected = tugas.status == pilihan,
+                                onClick = { onStatusChange(pilihan) },
+                                label = { Text(pilihan.label()) }
+                            )
+                        }
+                    }
+                }
 
                 Button(onClick = onEditClick, modifier = Modifier.fillMaxWidth()) {
                     Text("Edit")
                 }
+
+                OutlinedButton(
+                    onClick = { tampilkanDialogHapus = true },
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        contentColor = MaterialTheme.colorScheme.error
+                    ),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Hapus")
+                }
+            }
+
+            // Konfirmasi sebelum menghapus
+            if (tampilkanDialogHapus) {
+                AlertDialog(
+                    onDismissRequest = { tampilkanDialogHapus = false },
+                    title = { Text("Hapus tugas?") },
+                    text = {
+                        Text("Tugas \"${tugas.judul}\" akan dihapus permanen dan tidak bisa dikembalikan.")
+                    },
+                    confirmButton = {
+                        TextButton(
+                            onClick = {
+                                tampilkanDialogHapus = false
+                                onHapusConfirm()
+                            }
+                        ) { Text("Hapus") }
+                    },
+                    dismissButton = {
+                        TextButton(onClick = { tampilkanDialogHapus = false }) {
+                            Text("Batal")
+                        }
+                    }
+                )
             }
         }
     }

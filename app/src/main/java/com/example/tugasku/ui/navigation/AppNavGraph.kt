@@ -63,6 +63,13 @@ fun AppNavGraph(
             DetailScreen(
                 tugas = tugas,
                 onEditClick = { navController.navigate(Rute.edit(id)) },
+                onStatusChange = { statusBaru ->
+                    tugas?.let { viewModel.ubahStatus(it, statusBaru) }
+                },
+                onHapusConfirm = {
+                    tugas?.let { viewModel.hapus(it) }
+                    navController.popBackStack()
+                },
                 onKembali = { navController.popBackStack() }
             )
         }

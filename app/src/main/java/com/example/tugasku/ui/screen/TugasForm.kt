@@ -46,6 +46,7 @@ fun TugasForm(
     var deskripsi by rememberSaveable { mutableStateOf(tugasAwal?.deskripsi ?: "") }
     var deadline by rememberSaveable { mutableStateOf(tugasAwal?.deadline) }
     var prioritas by rememberSaveable { mutableStateOf(tugasAwal?.prioritas ?: Prioritas.SEDANG) }
+    var status by rememberSaveable { mutableStateOf(tugasAwal?.status ?: StatusTugas.BELUM) }
 
     var mataKuliahTersentuh by rememberSaveable { mutableStateOf(false) }
     var judulTersentuh by rememberSaveable { mutableStateOf(false) }
@@ -118,6 +119,20 @@ fun TugasForm(
             }
         }
 
+        // Status hanya muncul saat mengedit; tugas baru selalu dimulai dari "Belum"
+        if (tugasAwal != null) {
+            Text(text = "Status", style = MaterialTheme.typography.labelLarge)
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                StatusTugas.entries.forEach { pilihan ->
+                    FilterChip(
+                        selected = status == pilihan,
+                        onClick = { status = pilihan },
+                        label = { Text(pilihan.label()) }
+                    )
+                }
+            }
+        }
+
         // Tombol aktif hanya saat data valid
         Button(
             onClick = {
@@ -129,7 +144,7 @@ fun TugasForm(
                         deskripsi = deskripsi.trim(),
                         deadline = deadline!!, // aman: tombol hanya aktif jika deadline != null
                         prioritas = prioritas,
-                        status = tugasAwal?.status ?: StatusTugas.BELUM
+                        status = status
                     )
                 )
             },
