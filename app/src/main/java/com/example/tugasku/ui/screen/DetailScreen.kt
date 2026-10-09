@@ -4,27 +4,23 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -35,6 +31,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.tugasku.data.local.StatusTugas
 import com.example.tugasku.data.local.Tugas
+import com.example.tugasku.ui.component.AppTopBar
+import com.example.tugasku.ui.component.StatusDot
 import com.example.tugasku.util.formatTanggal
 import com.example.tugasku.util.label
 
@@ -52,26 +50,15 @@ fun DetailScreen(
     var tampilkanDialogHapus by rememberSaveable { mutableStateOf(false) }
 
     Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Detail Tugas") },
-                navigationIcon = {
-                    IconButton(onClick = onKembali) {
-                        Icon(
-                            Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Kembali"
-                        )
-                    }
-                }
-            )
-        }
+        containerColor = MaterialTheme.colorScheme.background,
+        topBar = { AppTopBar(title = "Detail tugas", onKembali = onKembali) }
     ) { padding ->
         if (tugas == null) {
             Box(
                 modifier = Modifier.fillMaxSize().padding(padding),
                 contentAlignment = Alignment.Center
             ) {
-                CircularProgressIndicator()
+                CircularProgressIndicator(strokeWidth = 2.dp)
             }
         } else {
             Column(
@@ -79,10 +66,22 @@ fun DetailScreen(
                     .fillMaxSize()
                     .padding(padding)
                     .verticalScroll(rememberScrollState())
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                    .padding(horizontal = 24.dp, vertical = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(24.dp)
             ) {
-                Text(text = tugas.judul, style = MaterialTheme.typography.headlineSmall)
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text(text = tugas.judul, style = MaterialTheme.typography.headlineSmall)
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        StatusDot(status = tugas.status)
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = tugas.status.label(),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+
                 BarisDetail("Mata kuliah", tugas.mataKuliah)
                 BarisDetail("Deadline", formatTanggal(tugas.deadline))
                 BarisDetail("Prioritas", tugas.prioritas.label())
@@ -91,9 +90,9 @@ fun DetailScreen(
                 // Pengubah status: perubahan langsung disimpan ke database
                 Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     Text(
-                        text = "Status",
+                        text = "Ubah status",
                         style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.primary
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         StatusTugas.entries.forEach { pilihan ->
@@ -106,18 +105,20 @@ fun DetailScreen(
                     }
                 }
 
-                Button(onClick = onEditClick, modifier = Modifier.fillMaxWidth()) {
-                    Text("Edit")
-                }
-
-                OutlinedButton(
-                    onClick = { tampilkanDialogHapus = true },
-                    colors = ButtonDefaults.outlinedButtonColors(
-                        contentColor = MaterialTheme.colorScheme.error
-                    ),
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text("Hapus")
+                // Satu tombol utama, aksi berisiko dibuat sebagai teks biasa
+                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    Button(onClick = onEditClick, modifier = Modifier.fillMaxWidth()) {
+                        Text("Edit tugas")
+                    }
+                    TextButton(
+                        onClick = { tampilkanDialogHapus = true },
+                        colors = ButtonDefaults.textButtonColors(
+                            contentColor = MaterialTheme.colorScheme.error
+                        ),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text("Hapus tugas")
+                    }
                 }
             }
 
@@ -125,16 +126,19 @@ fun DetailScreen(
             if (tampilkanDialogHapus) {
                 AlertDialog(
                     onDismissRequest = { tampilkanDialogHapus = false },
-                    title = { Text("Hapus tugas?") },
+                    title = { Text("Hapus tugas ini?") },
                     text = {
-                        Text("Tugas \"${tugas.judul}\" akan dihapus permanen dan tidak bisa dikembalikan.")
+                        Text("\"${tugas.judul}\" akan dihapus permanen dan tidak bisa dikembalikan.")
                     },
                     confirmButton = {
                         TextButton(
                             onClick = {
                                 tampilkanDialogHapus = false
                                 onHapusConfirm()
-                            }
+                            },
+                            colors = ButtonDefaults.textButtonColors(
+                                contentColor = MaterialTheme.colorScheme.error
+                            )
                         ) { Text("Hapus") }
                     },
                     dismissButton = {
@@ -154,7 +158,7 @@ private fun BarisDetail(label: String, nilai: String) {
         Text(
             text = label,
             style = MaterialTheme.typography.labelMedium,
-            color = MaterialTheme.colorScheme.primary
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
         Text(text = nilai, style = MaterialTheme.typography.bodyLarge)
     }

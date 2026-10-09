@@ -61,8 +61,8 @@ fun TugasForm(
         modifier = modifier
             .fillMaxWidth()
             .verticalScroll(rememberScrollState())
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+            .padding(horizontal = 24.dp, vertical = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         OutlinedTextField(
             value = mataKuliah,
@@ -108,7 +108,11 @@ fun TugasForm(
             )
         }
 
-        Text(text = "Prioritas", style = MaterialTheme.typography.labelLarge)
+        Text(
+            text = "Prioritas",
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             Prioritas.entries.forEach { pilihan ->
                 FilterChip(
@@ -121,7 +125,11 @@ fun TugasForm(
 
         // Status hanya muncul saat mengedit; tugas baru selalu dimulai dari "Belum"
         if (tugasAwal != null) {
-            Text(text = "Status", style = MaterialTheme.typography.labelLarge)
+            Text(
+                text = "Status",
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 StatusTugas.entries.forEach { pilihan ->
                     FilterChip(
