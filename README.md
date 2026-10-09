@@ -98,7 +98,7 @@ app/src/main/java/com/example/tugasku/
    (Ladybug Feature Drop atau lebih baru).
 2. Clone repository ini:
    ```bash
-   git clone https://github.com/USERNAME/NAMA-REPO.git
+   git clone https://github.com/2411009-yuda/TugasKu.git
    ```
 3. Buka folder hasil clone melalui **File → Open** di Android Studio.
 4. Tunggu proses **Gradle sync** selesai. Pertama kali membutuhkan koneksi internet
