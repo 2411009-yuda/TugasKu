@@ -30,13 +30,13 @@ tanpa koneksi internet.
 
 <table>
   <tr>
-    <td align="center"><img src="/screenshots/01-tampilan-awal.jpeg" width="200" alt="Tampilan awal"><br>Tampilan awal</td>
-    <td align="center"><img src="/screenshots/02-tambah-tugas.jpeg" width="200" alt="Tambah tugas"><br>Tambah tugas</td>
-    <td align="center"><img src="/screenshots/03-edit-tugas.jpeg" width="200" alt="Edit tugas"><br>Edit tugas</td>
+    <td align="center"><img src="docs/screenshots/01-tampilan-awal.jpeg" width="200" alt="Tampilan awal"><br>Tampilan awal</td>
+    <td align="center"><img src="docs/screenshots/02-tambah-tugas.jpeg" width="200" alt="Tambah tugas"><br>Tambah tugas</td>
+    <td align="center"><img src="docs/screenshots/03-edit-tugas.jpeg" width="200" alt="Edit tugas"><br>Edit tugas</td>
   </tr>
   <tr>
-    <td align="center"><img src="/screenshots/04-hapus-tugas.jpeg" width="200" alt="Konfirmasi hapus"><br>Konfirmasi hapus</td>
-    <td align="center"><img src="/screenshots/05-daftar-setelah-edit.jpeg" width="200" alt="Daftar setelah edit"><br>Daftar setelah edit</td>
+    <td align="center"><img src="docs/screenshots/04-hapus-tugas.jpeg" width="200" alt="Konfirmasi hapus"><br>Konfirmasi hapus</td>
+    <td align="center"><img src="docs/screenshots/05-daftar-setelah-edit.jpeg" width="200" alt="Daftar setelah edit"><br>Daftar setelah edit</td>
     <td></td>
   </tr>
 </table>
