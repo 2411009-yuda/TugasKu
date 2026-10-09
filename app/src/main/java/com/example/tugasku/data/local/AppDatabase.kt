@@ -7,9 +7,11 @@ import androidx.room.RoomDatabase
 
 @Database(entities = [Tugas::class], version = 1, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
+
     abstract fun tugasDao(): TugasDao
 
     companion object {
+        // Satu instance saja untuk seluruh aplikasi
         @Volatile
         private var INSTANCE: AppDatabase? = null
 
