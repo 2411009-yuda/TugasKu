@@ -118,4 +118,5 @@ Setelah dependency terunduh, aplikasi dapat dipakai tanpa internet.
 
 ## Dokumentasi tambahan
 
-- [Rancangan aplikasi](docs/RANCANGAN.md): kebutuhan, alur layar, model data, dan keputusan teknis
+- [Rancangan aplikasi](docs/rancangan.md): kebutuhan, alur layar, model data, dan keputusan teknis
+- [Refleksi teknis](docs/refleksi.md): keputusan desain, kendala, dan perbaikan berikutnya
